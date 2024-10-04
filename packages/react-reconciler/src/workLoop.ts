@@ -88,7 +88,7 @@ function performUnitOfWork(fiber: FiberNode) {
 	if (next === null) {
 		completeUnitOfWork(fiber);
 	} else {
-		workInProgress = next;
+		workInProgress = next as FiberNode;
 	}
 }
 

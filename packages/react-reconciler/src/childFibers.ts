@@ -36,7 +36,7 @@ function ChildReconciler(shouldTrackEffects: boolean) {
 	return function reconcilerChildRibers(
 		returnFiber: FiberNode,
 		currentFiber: FiberNode | null,
-		newChild: ReactElementType
+		newChild: ReactElementType | undefined
 	) {
 		// 判断当前fiber的类型
 		if (typeof newChild === 'object' && newChild !== null) {

@@ -4,8 +4,9 @@ import {
 	createInstance,
 	appendInitialChild,
 	createTextInstance
-} from './hostConfig';
+} from 'hostConfig';
 import { NoFlags } from './fiberFlags';
+import { Container } from 'hostConfig';
 
 export const completeWork = (wip: FiberNode) => {
 	const newProps = wip.pendingProps;
@@ -45,7 +46,7 @@ export const completeWork = (wip: FiberNode) => {
 	}
 };
 
-function appendAllChildren(parent: FiberNode, wip: FiberNode) {
+function appendAllChildren(parent: Container, wip: FiberNode) {
 	let node = wip.child;
 
 	while (node !== null) {
