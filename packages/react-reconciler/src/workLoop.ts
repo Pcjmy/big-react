@@ -71,12 +71,13 @@ function commitRoot(root: FiberRootNode) {
 	const rootHasEffect = (finishedWork.flags & MutationMask) !== NoFlags;
 
 	if (subtreeHasEffect || rootHasEffect) {
-		root.current = finishedWork;
 		commitMutationEffects(finishedWork);
+		root.current = finishedWork;
 	}
 }
 
 function workLoop() {
+	console.log('workInProgress=', workInProgress);
 	while (workInProgress !== null) {
 		performUnitOfWork(workInProgress);
 	}
