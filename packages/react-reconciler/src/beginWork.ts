@@ -12,7 +12,7 @@ export const beginWork = (wip: FiberNode) => {
 		case HostComponent:
 			return updateHostComponent(wip);
 		case HostText:
-			return;
+			return null;
 		default:
 			if (__DEV__) {
 				console.warn('beginWork未实现的类型');

@@ -40,7 +40,7 @@ function renderRoot(root: FiberRootNode) {
 			break;
 		} catch (e) {
 			if (__DEV__) {
-				console.warn('workLoop发生错误');
+				console.warn('workLoop发生错误', e);
 			}
 			workInProgress = null;
 		}
@@ -72,6 +72,8 @@ function commitRoot(root: FiberRootNode) {
 
 	if (subtreeHasEffect || rootHasEffect) {
 		commitMutationEffects(finishedWork);
+		root.current = finishedWork;
+	} else {
 		root.current = finishedWork;
 	}
 }
