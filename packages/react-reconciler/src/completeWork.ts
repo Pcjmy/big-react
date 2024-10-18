@@ -13,6 +13,10 @@ import {
 import { NoFlags } from './fiberFlags';
 import { Container } from 'hostConfig';
 
+export function markUpdate(fiber: FiberNode) {
+	fiber.flags |= NoFlags;
+}
+
 export const completeWork = (wip: FiberNode) => {
 	const newProps = wip.pendingProps;
 	const current = wip.alternate;
@@ -33,6 +37,13 @@ export const completeWork = (wip: FiberNode) => {
 		case HostText:
 			if (current !== null && wip.stateNode) {
 				// update
+				const oldText = current.memoizedProps.content;
+				const newText = newProps.content;
+
+				if (oldText !== newText) {
+					// update
+					markUpdate(wip);
+				}
 			} else {
 				// 1. 构建DOM
 				const instance = createTextInstance(newProps.content);
