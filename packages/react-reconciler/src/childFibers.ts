@@ -63,7 +63,7 @@ function ChildReconciler(shouldTrackEffects: boolean) {
 		if (currentFirstChild !== null) {
 			if (currentFirstChild.tag === HostText) {
 				// 类型没变可以复用
-				const existing = useFiber(currentFirstChild, content);
+				const existing = useFiber(currentFirstChild, { content });
 				existing.return = returnFiber;
 				return existing;
 			}

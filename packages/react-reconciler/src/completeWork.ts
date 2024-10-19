@@ -10,11 +10,11 @@ import {
 	appendInitialChild,
 	createTextInstance
 } from 'hostConfig';
-import { NoFlags } from './fiberFlags';
+import { NoFlags, Update } from './fiberFlags';
 import { Container } from 'hostConfig';
 
 export function markUpdate(fiber: FiberNode) {
-	fiber.flags |= NoFlags;
+	fiber.flags |= Update;
 }
 
 export const completeWork = (wip: FiberNode) => {
