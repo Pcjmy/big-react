@@ -59,7 +59,7 @@ function ChildReconciler(shouldTrackEffects: boolean) {
 				} else {
 					if (__DEV__) {
 						console.warn('还未实现的react类型', element);
-						break work;
+						break;
 					}
 				}
 			} else {
@@ -124,7 +124,7 @@ function ChildReconciler(shouldTrackEffects: boolean) {
 			const after = newChild[i];
 
 			// 标记移动还是插入
-			const newFiber = updateFromMap();
+			const newFiber = updateFromMap(returnFiber, existingChildren, i, after);
 
 			if (newFiber === null) {
 				continue;
