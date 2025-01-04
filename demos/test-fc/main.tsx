@@ -13,7 +13,13 @@ function App() {
 		<li key="2">2</li>,
 		<li key="1">1</li>
 	]
-	return <ul onClickCapture={() => setNum(num + 1)}>{arr}</ul>;
+	return (
+		<ul onClickCapture={() => setNum(num + 1)}>
+			<li>1</li>
+			<li>2</li>
+			{arr}
+		</ul>
+	);
 }
 
 function Child() {

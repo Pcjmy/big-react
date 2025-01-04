@@ -96,7 +96,7 @@ function getEventCallbackNameFromEventType(
 }
 
 function collectPaths(
-	targetElement: Element,
+	targetElement: any,
 	container: Container,
 	eventType: string
 ) {

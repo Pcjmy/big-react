@@ -3,7 +3,8 @@ import {
 	HostRoot,
 	HostComponent,
 	HostText,
-	FunctionComponent
+	FunctionComponent,
+	Fragment
 } from './workTags';
 import { UpdateQueue, processUpdateQueue } from './updateQueue';
 import { ReactElementType } from 'shared/ReactTypes';
@@ -21,6 +22,8 @@ export const beginWork = (wip: FiberNode) => {
 			return null;
 		case FunctionComponent:
 			return updateFunctionComponent(wip);
+		case Fragment:
+			return updateFragment(wip);
 		default:
 			if (__DEV__) {
 				console.warn('beginWork未实现的类型');
@@ -64,4 +67,10 @@ function reconcileChildren(wip: FiberNode, children?: ReactElementType) {
 		// mount
 		wip.child = mountChildFibers(wip, null, children);
 	}
+}
+
+function updateFragment(wip: FiberNode) {
+	const nextChildren = wip.pendingProps;
+	reconcileChildren(wip, nextChildren);
+	return wip.child;
 }

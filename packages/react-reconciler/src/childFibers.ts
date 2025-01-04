@@ -1,7 +1,11 @@
-import { FiberNode, createFiberFromElement } from './fiber';
-import { Props, ReactElementType } from 'shared/ReactTypes';
-import { REACT_ELEMENT_TYPE } from 'shared/ReactSymbols';
-import { HostText } from './workTags';
+import {
+	FiberNode,
+	createFiberFromElement,
+	createFiberFromFragment
+} from './fiber';
+import { Props, ReactElementType, Key } from 'shared/ReactTypes';
+import { REACT_ELEMENT_TYPE, REACT_FRAGMENT_TYPE } from 'shared/ReactSymbols';
+import { HostText, Fragment } from './workTags';
 import { Placement, ChildDeletion } from './fiberFlags';
 import { createWorkInProgress } from './fiber';
 
@@ -46,6 +50,10 @@ function ChildReconciler(shouldTrackEffects: boolean) {
 				// key相同
 				if (element.$$typeof === REACT_ELEMENT_TYPE) {
 					if (currentFiber.type === element.type) {
+						let props = element.props;
+						if (element.type === REACT_FRAGMENT_TYPE) {
+							props = element.props.children;
+						}
 						// type相同
 						const existing = useFiber(currentFiber, element.props);
 						existing.return = returnFiber;
@@ -69,7 +77,12 @@ function ChildReconciler(shouldTrackEffects: boolean) {
 			}
 		}
 		// 根据element创建fiber
-		const fiber = createFiberFromElement(element);
+		let fiber;
+		if (element.type === REACT_FRAGMENT_TYPE) {
+			fiber = createFiberFromFragment(element.props.children, key);
+		} else {
+			fiber = createFiberFromElement(element);
+		}
 		fiber.return = returnFiber;
 		return fiber;
 	}
@@ -188,6 +201,15 @@ function ChildReconciler(shouldTrackEffects: boolean) {
 		if (typeof element === 'object' && element !== null) {
 			switch (element.$$typeof) {
 				case REACT_ELEMENT_TYPE:
+					if (element.type === REACT_FRAGMENT_TYPE) {
+						return updateFragment(
+							returnFiber,
+							before,
+							element.props.children,
+							keyToUse,
+							existingChildren
+						);
+					}
 					if (before) {
 						if (before.type === element.type) {
 							existingChildren.delete(keyToUse);
@@ -197,8 +219,14 @@ function ChildReconciler(shouldTrackEffects: boolean) {
 					return createFiberFromElement(element);
 			}
 
-			if (Array.isArray(element) && __DEV__) {
-				console.warn('还未实现数组类型的child');
+			if (Array.isArray(element)) {
+				return updateFragment(
+					returnFiber,
+					before,
+					element,
+					keyToUse,
+					existingChildren
+				);
 			}
 		}
 		return null;
@@ -207,10 +235,25 @@ function ChildReconciler(shouldTrackEffects: boolean) {
 	return function reconcilerChildRibers(
 		returnFiber: FiberNode,
 		currentFiber: FiberNode | null,
-		newChild: ReactElementType | undefined
+		newChild?: any
 	) {
+		// 判断Fragment
+		const isUnkeyedTopLevelFragment =
+			typeof newChild === 'object' &&
+			newChild !== null &&
+			newChild.type === REACT_FRAGMENT_TYPE &&
+			newChild.key === null;
+
+		if (isUnkeyedTopLevelFragment) {
+			newChild = newChild.props.children;
+		}
+
 		// 判断当前fiber的类型
 		if (typeof newChild === 'object' && newChild !== null) {
+			if (Array.isArray(newChild)) {
+				return reconcileChildrenArray(returnFiber, currentFiber, newChild);
+			}
+
 			switch (newChild.$$typeof) {
 				case REACT_ELEMENT_TYPE:
 					// 原生节点
@@ -219,10 +262,6 @@ function ChildReconciler(shouldTrackEffects: boolean) {
 					);
 				default:
 					break;
-			}
-
-			if (Array.isArray(newChild)) {
-				return reconcileChildrenArray(returnFiber, currentFiber, newChild);
 			}
 		}
 
@@ -235,7 +274,7 @@ function ChildReconciler(shouldTrackEffects: boolean) {
 
 		if (currentFiber !== null) {
 			// 兜底删除
-			deleteChild(returnFiber, currentFiber);
+			deleteRemainingChildren(returnFiber, currentFiber);
 		}
 
 		if (__DEV__) {
@@ -251,6 +290,24 @@ function useFiber(fiber: FiberNode, pendingProps: Props): FiberNode {
 	clone.index = 0;
 	clone.sibling = null;
 	return clone;
+}
+
+function updateFragment(
+	returnFiber: FiberNode,
+	current: FiberNode | undefined,
+	element: any[],
+	key: Key,
+	existingChildren: ExistingChildren
+) {
+	let fiber;
+	if (!current || current.tag !== Fragment) {
+		fiber = createFiberFromFragment(element, key);
+	} else {
+		existingChildren.delete(key);
+		fiber = useFiber(current, element);
+	}
+	fiber.return = returnFiber;
+	return fiber;
 }
 
 export const reconcileChildFibers = ChildReconciler(true);
