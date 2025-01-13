@@ -232,7 +232,7 @@ function ChildReconciler(shouldTrackEffects: boolean) {
 		return null;
 	}
 
-	return function reconcilerChildRibers(
+	return function reconcilerChildFibers(
 		returnFiber: FiberNode,
 		currentFiber: FiberNode | null,
 		newChild?: any
