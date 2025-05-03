@@ -5,6 +5,7 @@ import {
 import { ReactElementType } from 'shared/ReactTypes';
 import { REACT_ELEMENT_TYPE } from 'shared/ReactSymbols';
 import { Instance, Container } from './hostConfig';
+import * as Scheduler from 'scheduler';
 
 let idCounter = 0;
 
@@ -86,6 +87,7 @@ export function createRoot() {
 	}
 
 	return {
+		_Scheduler: Scheduler,
 		render(element: ReactElementType) {
 			return updateContainer(element, root);
 		},

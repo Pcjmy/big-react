@@ -187,7 +187,6 @@ function flushPassiveEffects(pendingPassiveEffects: PendingPassiveEffects) {
 }
 
 function workLoop() {
-	console.log('workInProgress=', workInProgress);
 	while (workInProgress !== null) {
 		performUnitOfWork(workInProgress);
 	}
