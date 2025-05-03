@@ -3,6 +3,7 @@ import {
 	updateContainer
 } from 'react-reconciler/src/fiberReconciler';
 import { ReactElementType } from 'shared/ReactTypes';
+import { REACT_ELEMENT_TYPE } from 'shared/ReactSymbols';
 import { Instance, Container } from './hostConfig';
 
 let idCounter = 0;
@@ -13,6 +14,7 @@ export function createRoot() {
 		children: []
 	};
 
+	// @ts-ignore
 	const root = createContainer(container);
 
 	function getChildren(parent: Container | Instance) {

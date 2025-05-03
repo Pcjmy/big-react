@@ -12,8 +12,7 @@ import {
 	createTextInstance
 } from 'hostConfig';
 import { NoFlags, Update } from './fiberFlags';
-import { Container } from 'hostConfig';
-import { updateFiberProps } from 'react-dom/src/SyntheticEvent';
+import { Container, Instance } from 'hostConfig';
 
 export function markUpdate(fiber: FiberNode) {
 	fiber.flags |= Update;
@@ -27,7 +26,7 @@ export const completeWork = (wip: FiberNode) => {
 		case HostComponent:
 			if (current !== null && wip.stateNode) {
 				// update
-				updateFiberProps(wip.stateNode, newProps);
+				markUpdate(wip);
 			} else {
 				// 1. 构建DOM
 				const instance = createInstance(wip.type, newProps);
@@ -67,7 +66,7 @@ export const completeWork = (wip: FiberNode) => {
 	}
 };
 
-function appendAllChildren(parent: Container, wip: FiberNode) {
+function appendAllChildren(parent: Container | Instance, wip: FiberNode) {
 	let node = wip.child;
 
 	while (node !== null) {
