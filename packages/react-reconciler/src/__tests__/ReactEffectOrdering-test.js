@@ -32,26 +32,32 @@ describe('ReactHooksWithNoopRenderer', () => {
 	});
 
 	test('passive unmounts on deletion are fired in parent -> child order', async () => {
-		// const root = ReactNoop.createRoot();
-		// function Parent() {
-		// 	useEffect(() => {
-		// 		return () => Scheduler.unstable_yieldValue('Unmount parent');
-		// 	});
-		// 	return <Child />;
-		// }
-		// function Child() {
-		// 	useEffect(() => {
-		// 		return () => Scheduler.unstable_yieldValue('Unmount child');
-		// 	});
-		// 	return 'Child';
-		// }
-		// await act(async () => {
-		// 	root.render(<Parent />);
-		// });
-		// expect(root).toMatchRenderedOutput('Child');
-		// await act(async () => {
-		// 	root.render(null);
-		// });
-		// expect(Scheduler).toHaveYielded(['Unmount parent', 'Unmount child']);
+		const root = ReactNoop.createRoot();
+
+		function Parent() {
+			useEffect(() => {
+				return () => Scheduler.unstable_yieldValue('Unmount parent');
+			});
+			return <Child />;
+		}
+
+		function Child() {
+			useEffect(() => {
+				return () => Scheduler.unstable_yieldValue('Unmount child');
+			});
+			return 'Child';
+		}
+
+		await act(async () => {
+			root.render(<Parent />);
+		});
+
+		expect(root).toMatchRenderedOutput('Child');
+
+		await act(async () => {
+			root.render(null);
+		});
+
+		expect(Scheduler).toHaveYielded(['Unmount parent', 'Unmount child']);
 	});
 });
