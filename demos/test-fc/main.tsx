@@ -1,21 +1,31 @@
 import { useState, useEffect } from 'react';
-import ReactDOM from 'react-noop-renderer';
+import ReactDOM from 'react-dom/client';
 
 function App() {
-  return (
-    <>
-      <Child />
-      <div>hello world</div>
-    </>
-  );
+  const [num, setNum] = useState(0);
+
+	useEffect(() => {
+		return () => console.log('Unmount parent');
+	});
+
+  if (num) {
+    return null;
+  }
+
+	return (
+		<div onClick={() => setNum((num) => num + 1)}>
+			<Child />
+		</div>
+	);
 }
 
 function Child() {
-  return 'Child';
+	useEffect(() => {
+		return () => console.log('Unmount child');
+	});
+	return 'Child';
 }
 
-const root = ReactDOM.createRoot();
-
-root.render(<App />);
-
-window.root = root;
+ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(
+	<App />
+);

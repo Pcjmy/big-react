@@ -3,7 +3,7 @@ import {
 	updateContainer
 } from 'react-reconciler/src/fiberReconciler';
 import { ReactElementType } from 'shared/ReactTypes';
-import { REACT_ELEMENT_TYPE } from 'shared/ReactSymbols';
+import { REACT_ELEMENT_TYPE, REACT_FRAGMENT_TYPE } from 'shared/ReactSymbols';
 import { Instance, Container } from './hostConfig';
 import * as Scheduler from 'scheduler';
 
@@ -30,7 +30,7 @@ export function createRoot() {
 		if (Array.isArray(children)) {
 			return {
 				$$typeof: REACT_ELEMENT_TYPE,
-				type: REACT_ELEMENT_TYPE,
+				type: REACT_FRAGMENT_TYPE,
 				key: null,
 				ref: null,
 				props: { children },
