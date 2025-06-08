@@ -1,29 +1,23 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import ReactDOM from 'react-dom/client';
 
 function App() {
-  const [num, setNum] = useState(0);
-
-	useEffect(() => {
-		return () => console.log('Unmount parent');
-	});
-
-  if (num) {
-    return null;
-  }
+	const [num, update] = useState(100);
+	console.log('test');
 
 	return (
-		<div onClick={() => setNum((num) => num + 1)}>
-			<Child />
-		</div>
+		<ul onClick={() => update(50)}>
+			{new Array(num).fill(0).map((_, i) => {
+				return <Child key={i}>{i}</Child>;
+			})}
+		</ul>
 	);
 }
 
-function Child() {
-	useEffect(() => {
-		return () => console.log('Unmount child');
-	});
-	return 'Child';
+function Child({ children }) {
+	const now = performance.now();
+	while (performance.now() - now < 4) {}
+	return <li>{children}</li>;
 }
 
 ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(
