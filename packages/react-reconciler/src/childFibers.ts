@@ -62,7 +62,7 @@ function ChildReconciler(shouldTrackEffects: boolean) {
 						return existing;
 					}
 					// key相同，type不同，删掉旧的
-					deleteRemainingChildren(returnFiber, currentFiber.sibling);
+					deleteRemainingChildren(returnFiber, currentFiber);
 					break;
 				} else {
 					if (__DEV__) {

@@ -1,6 +1,7 @@
 import {
 	Container,
 	Instance,
+	insertChildToContainer,
 	appendChildToContainer,
 	commitUpdate,
 	removeChild
@@ -309,11 +310,7 @@ function insertOrAppendPlacementNodeIntoContainer(
 ) {
 	if (finishedWork.tag === HostComponent || finishedWork.tag === HostText) {
 		if (before) {
-			insertOrAppendPlacementNodeIntoContainer(
-				finishedWork.stateNode,
-				hostParent,
-				before
-			);
+			insertChildToContainer(finishedWork.stateNode, hostParent, before);
 		} else {
 			appendChildToContainer(hostParent, finishedWork.stateNode);
 		}
