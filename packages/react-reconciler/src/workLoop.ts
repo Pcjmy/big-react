@@ -12,7 +12,8 @@ import {
 	commitHookEffectListUnmount,
 	commitHookEffectListDestroy,
 	commitMutationEffects,
-	commitHookEffectListCreate
+	commitHookEffectListCreate,
+	commitLayoutEffects
 } from './commitWork';
 import {
 	getHighestPriorityLane,
@@ -270,6 +271,7 @@ function commitRoot(root: FiberRootNode) {
 	if (subtreeHasEffect || rootHasEffect) {
 		commitMutationEffects(finishedWork, root);
 		root.current = finishedWork;
+		commitLayoutEffects(finishedWork, root);
 	} else {
 		root.current = finishedWork;
 	}
